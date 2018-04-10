@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: abb32467ecf15404aa440ae7a7f9cc0e
+timeCreated: 1518830783
+licenseType: Free
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Ikaros Sans
+  fontNames:
+  - Ikaros Sans
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: f850e2193ec9c45cdb44df56802a96f3, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
