@@ -50,7 +50,7 @@ public class SubmitButtonHandler : MonoBehaviour {
         commandExecution.indexNode = 0;
         commandExecution.playerRot = 0;
         commandExecution.targetAngle = 0;
-       
+        
         /*If user had previously clicked the play Button, return player to original position and 
 		 * clear commandList so that when user clicks it again, commands are not duplicated
 		 */
@@ -87,9 +87,7 @@ public class SubmitButtonHandler : MonoBehaviour {
 	void sendCommandsToCharacter()
 	{
         //UIPlayCommand.Execute executes the command list
-        //commandExecution.TaskOnClick();
-        StartCoroutine(commandExecution.ExecuteCommand());
-        //commandExecution.ExecuteCommand();
+        commandExecution.TaskOnClick();
 	}
 
 	// Update is called once per frame

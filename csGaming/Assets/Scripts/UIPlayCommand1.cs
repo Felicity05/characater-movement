@@ -32,9 +32,11 @@ public class UIPlayCommand1 : MonoBehaviour {
 
     bool rotated = false;
 
-    float[] anglesR = {90, 180, 270, 360};
+    /*float[] anglesR = {90, 180, 270, 360};
 
-    float[] anglesL = {-90, -180, -270, 0};
+    float[] anglesL = {-90, -180, -270, 0};*/
+    float[] angles = { -270, -180, -90, 0, 90, 180, 270, 360 };
+    int angleCount = 3;
 
     public float targetAngle;
 
@@ -52,7 +54,8 @@ public class UIPlayCommand1 : MonoBehaviour {
 	}
 
     public void TaskOnClick() {
-        
+        angleCount = 3;
+        StartCoroutine(ExecuteCommand());
     }
 
 
@@ -61,7 +64,7 @@ public class UIPlayCommand1 : MonoBehaviour {
         
         if(rotated){
             StartCoroutine(Rotate());
-            print("Rotating INSIDE OF THE FIXED UPDATE");
+            //print("Rotating INSIDE OF THE FIXED UPDATE");
         }
 
         if(isWalking){
@@ -76,42 +79,45 @@ public class UIPlayCommand1 : MonoBehaviour {
 
 
 	public IEnumerator ExecuteCommand(){
-        int cmdUp = 0, cmdDown = 0, right = 0, left = 0, j = 0, rotations = 0;
+        int cmdUp = 0;//cmdDown = 0, right = 0, left = 0, j = 0, rotations = 0;
 
         //playerRot = (int)Player.transform.localEulerAngles.y;
+        print("Entered ExecuteCommand method");
 
-        for (int i = 0; i < btnInstance.commandList.Count; i++)
+        foreach(string command in btnInstance.commandList)
         {
             //print("numbers of commands(i) = " + i);
 
-            if (btnInstance.commandList[i].Equals("MoveRight()")) //to turn right
+            if (command.Equals("MoveRight()")) //to turn right
             {
-                right++; //count the amount of moveUp commands issued
-
-                print("right commands " + right);
-
+                //right++; //count the amount of moveUp commands issued
+                angleCount++;
+                //print("right commands " + right);
+                print("Angle Count = " + angleCount);
+                print("Turn right entered!");
                 //to get the angle to rotate the character
-                targetAngle = anglesR[(right-1) % anglesR.Length];
-
-                print("targetAngle angle RIGHT = " + targetAngle);
+                //targetAngle = anglesR[(right-1) % anglesR.Length];
+                targetAngle = angles[angleCount % angles.Length];
+                //print("targetAngle angle RIGHT = " + targetAngle);
 
                 playerRot = Player.transform.localRotation.eulerAngles.y; //gets the local rotation of the character
 
                 rotated = true;
 
                 yield return new WaitForSeconds(1f);
-                    
+
             }
 
-            else if (btnInstance.commandList[i].Equals("MoveLeft()")) // to turn left
+            else if (command.Equals("MoveLeft()")) // to turn left
             {
 
-                left++; //count the amount of moveLeft commands issued
-
-                print("LEFT commands " + left);
-
-                targetAngle = anglesL[(left - 1) % anglesL.Length];
-
+                //left++; //count the amount of moveLeft commands issued
+                angleCount--;
+                //print("LEFT commands " + left);
+                print("Angle Count = " + angleCount);
+                print("Turn left entered!");
+                //targetAngle = anglesL[(left - 1) % anglesL.Length];
+                targetAngle = angles[angleCount % angles.Length];
                 print("targetAngle angle LEFT = " + targetAngle);
 
                 playerRot = Player.transform.localRotation.eulerAngles.y; //gets the local rotation of the character
@@ -124,16 +130,17 @@ public class UIPlayCommand1 : MonoBehaviour {
 
             }
 
-            else if (btnInstance.commandList[i].Equals("MoveUp()"))
+            else if (command.Equals("MoveUp()"))
             {
                 cmdUp++; //count the amount of moveUp commands issued
 
-                print("index node: " + indexNode+ "commands up: "+ cmdUp);
+                print("index node: " + indexNode + "commands up: " + cmdUp);
 
                 isWalking = true; //start walking animation 
 
                 //to prevent the player from moving when it is not facing the correct way
-                if (indexNode < 7 && (targetAngle == 0 || targetAngle == 360)){
+                if (indexNode < 7 && (targetAngle == 0 || targetAngle == 360))
+                {
                     yield return StartCoroutine(Walk()); //where the player moves
                 }
 
@@ -141,12 +148,14 @@ public class UIPlayCommand1 : MonoBehaviour {
 
 
                 //inverse logic for move down
-                if(indexNode < cmdUp){ 
+                if (indexNode < cmdUp)
+                {
                     indexNode++;
                 }
 
                 //to stop the animation once the player has reached the end node
-                if(indexNode == cmdUp){
+                if (indexNode == cmdUp)
+                {
                     isWalking = false;
                 }
 
@@ -157,17 +166,17 @@ public class UIPlayCommand1 : MonoBehaviour {
             //COMPLETE THIS LOGIC
             //else if (btnInstance.commandList[i].Equals("MoveDown()")){
 
-                //cmdDown++;
+            //cmdDown++;
 
-                //print("index node: " + indexNode + "commands down: " + cmdDown);
+            //print("index node: " + indexNode + "commands down: " + cmdDown);
 
-                //yield return StartCoroutine(Walk());
+            //yield return StartCoroutine(Walk());
 
-                //if (indexNode == cmdDown)
-                //{
-                //    indexNode--;
-                //    isWalking = false;
-                //}
+            //if (indexNode == cmdDown)
+            //{
+            //    indexNode--;
+            //    isWalking = false;
+            //}
             //}
 
         }
@@ -188,7 +197,7 @@ public class UIPlayCommand1 : MonoBehaviour {
         }
 
         yield return new WaitForFixedUpdate();
-        print("REPEATING FUNCTION ======================================");
+        //print("REPEATING FUNCTION ======================================");
 
         //yield return new WaitForSeconds(1f);
 
@@ -244,12 +253,12 @@ public class UIPlayCommand1 : MonoBehaviour {
             Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, endRot, 5 * Time.deltaTime);
           
             //print("after rotating player rotation = " + Player.transform.rotation + "desired rotation = " + endRot);
-            print("player rotation = " + playerRot);
+            //print("player rotation = " + playerRot);
         }
         else
         {
             //playerRot = Player.transform.localRotation.eulerAngles.y;
-            print("after rotating Player rotation " + playerRot);
+            //print("after rotating Player rotation " + playerRot);
             rotated = false;
             //print("player rotation and target rotation are equals");
         }
