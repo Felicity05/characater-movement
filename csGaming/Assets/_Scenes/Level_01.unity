@@ -2784,11 +2784,11 @@ MonoBehaviour:
   indexNode: 0
   speed: 0.5
   anim: {fileID: 392978417}
+  isWalking: 0
   submit: {fileID: 971313776}
   clear: {fileID: 101709166}
   playerRot: 0
   targetAngle: 0
-  rotation: 0
 --- !u!43 &327172796
 Mesh:
   m_ObjectHideFlags: 0

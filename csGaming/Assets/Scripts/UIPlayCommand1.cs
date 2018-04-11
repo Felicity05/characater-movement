@@ -21,16 +21,22 @@ public class UIPlayCommand1 : MonoBehaviour {
 
     public Animator anim;
 
-    //public bool isWalking = false;
+    public bool isWalking = false;
 
     //for the buttons to stay inactive
     public Button submit;
     public Button clear;
     GameObject[] editBtn;
 
-    public int playerRot = 0;
+    public float playerRot = 0;
 
     bool rotated = false;
+
+    float[] anglesR = {90, 180, 270, 360};
+
+    float[] anglesL = {-90, -180, -270, 0};
+
+    public float targetAngle;
 
 
 	// Use this for initialization
@@ -50,16 +56,29 @@ public class UIPlayCommand1 : MonoBehaviour {
     }
 
 
+	private void FixedUpdate()
+	{
+        
+        if(rotated){
+            StartCoroutine(Rotate());
+            print("Rotating INSIDE OF THE FIXED UPDATE");
+        }
 
+        if(isWalking){
+            anim.SetBool("isWalking", true);
+        } else {
+            anim.SetBool("isWalking", false);
+        }
+            
 
-    public float targetAngle, rotation;
+	}
 
 
 
 	public IEnumerator ExecuteCommand(){
-        int cmdUp = 0, cmdDown = 0, right = 0, left = 0, j = 0;
+        int cmdUp = 0, cmdDown = 0, right = 0, left = 0, j = 0, rotations = 0;
 
-        playerRot = (int)Player.transform.localEulerAngles.y;
+        //playerRot = (int)Player.transform.localEulerAngles.y;
 
         for (int i = 0; i < btnInstance.commandList.Count; i++)
         {
@@ -67,31 +86,39 @@ public class UIPlayCommand1 : MonoBehaviour {
 
             if (btnInstance.commandList[i].Equals("MoveRight()")) //to turn right
             {
-                right++;
+                right++; //count the amount of moveUp commands issued
+
                 print("right commands " + right);
 
                 //to get the angle to rotate the character
+                targetAngle = anglesR[right-1];
 
-                //rotation = Player.transform.localRotation.eulerAngles.y;
+                print("targetAngle angle RIGHT = " + targetAngle);
 
-                print("targetAngle = " + targetAngle);
-                targetAngle = (targetAngle + 90) % 360;
+                playerRot = Player.transform.localRotation.eulerAngles.y; //gets the local rotation of the character
 
+                rotated = true;
 
-                Player.transform.Rotate(0, targetAngle, 0);
-
-                targetAngle = 0;
-                   
-                //yield return StartCoroutine(Rotate());
+                yield return new WaitForSeconds(1f);
                     
             }
 
             else if (btnInstance.commandList[i].Equals("MoveLeft()")) // to turn left
-            { 
-                
-                Player.transform.Rotate(0, -90, 0);
+            {
 
-                print("player rotated to the left");
+                left++; //count the amount of moveLeft commands issued
+
+                print("LEFT commands " + left);
+
+                targetAngle = anglesL[left - 1];
+
+                print("targetAngle angle LEFT = " + targetAngle);
+
+                playerRot = Player.transform.localRotation.eulerAngles.y; //gets the local rotation of the character
+
+                rotated = true;
+
+                //print("player rotated to the left");
 
                 yield return new WaitForSeconds(1f);
 
@@ -99,37 +126,47 @@ public class UIPlayCommand1 : MonoBehaviour {
 
             else if (btnInstance.commandList[i].Equals("MoveUp()"))
             {
-                cmdUp++;
+                cmdUp++; //count the amount of moveUp commands issued
 
                 print("index node: " + indexNode+ "commands up: "+ cmdUp);
 
+                isWalking = true; //start walking animation 
 
-                if (targetAngle == 0){
-                    yield return StartCoroutine(Walk()); //where player moves
+                //to prevent the player from moving when it is not facing the correct way
+                if (indexNode < 7 && (targetAngle == 0 || targetAngle == 360)){
+                    yield return StartCoroutine(Walk()); //where the player moves
                 }
-               
+
+                //make logic for walking after the node 7, I have to put the nodes on the scene
+
 
                 //inverse logic for move down
-                if(indexNode < cmdUp){
+                if(indexNode < cmdUp){ 
                     indexNode++;
                 }
 
+                //to stop the animation once the player has reached the end node
+                if(indexNode == cmdUp){
+                    isWalking = false;
+                }
 
             }
 
-            //if (btnInstance.commandList[i].Equals("MoveDown()")){
+            //COMPLETE THIS LOGIC
+            else if (btnInstance.commandList[i].Equals("MoveDown()")){
 
-            //    cmdDown++;
+                cmdDown++;
 
-            //    print("index node: " + indexNode + "commands down: " + cmdDown);
+                print("index node: " + indexNode + "commands down: " + cmdDown);
 
-            //    yield return StartCoroutine(Walk());
+                //yield return StartCoroutine(Walk());
 
-            //    if (indexNode == cmdDown)
-            //    {
-            //        indexNode--;
-            //    }
-            //}
+                //if (indexNode == cmdDown)
+                //{
+                //    indexNode--;
+                //    isWalking = false;
+                //}
+            }
 
         }
         //yield return new WaitForSeconds(1f);
@@ -148,60 +185,72 @@ public class UIPlayCommand1 : MonoBehaviour {
             btn.GetComponent<Button>().interactable = true;
         }
 
+        yield return new WaitForFixedUpdate();
+        print("REPEATING FUNCTION ======================================");
+
         //yield return new WaitForSeconds(1f);
 
-        print("REPEATING FUNCTION");
+
     }
+
+    /*Function to move the player throught the waypoints*/
 
     public IEnumerator Walk()
     {
-        if (path.isValidNode(indexNode))
+        if (path.isValidNode(indexNode)) //check if there exits a node to move to 
         {
+            //get the local position of that node
             currentPosition = nodes[indexNode].transform.localPosition;
 
+            /*if the distance between the position of the player and the node is bigger than 0 then move the player to that node
+             when the node is reaced the distance between the position of the node and the position of the player should be 0 */
             while (Vector3.Distance(Player.transform.localPosition, currentPosition) > 0.01f)
             {
 
                 //to increase the speed between the gap 
-                if (Vector3.Distance(Player.transform.localPosition, currentPosition) > 1.6){
+                if (Vector3.Distance(Player.transform.localPosition, currentPosition) > 1.128){  //1.128 is the distande between each node
                     speed = 25f;
                 } else {
-                    speed = 0.5f;
+                    speed = 0.5f; //to mantain a fixed speed between the nodes
                 }
 
 
-                anim.SetBool("isWalking", true);
+                anim.SetBool("isWalking", true); //starts the walking animation 
+                //perform the movement of the player from one node to the other
                 Player.transform.localPosition = Vector3.MoveTowards(Player.transform.localPosition, currentPosition, speed * Time.deltaTime);
 
-                yield return null;
+                yield return null; //waits for the function to end
             }
 
-            //indexNode++;
-            anim.SetBool("isWalking", false);
+            anim.SetBool("isWalking", false); //stopt the walking animation
 
         }
     }
 
+
+    /*Function to rotate the player */
+
     IEnumerator Rotate(){
 
-        //Player.transform.Rotate(0, 90, 0);
+        Quaternion endRot = Quaternion.AngleAxis(targetAngle, Vector3.up); //desired rotation 
 
-        Quaternion endRot = Quaternion.AngleAxis(targetAngle, Vector3.up);
-
-        float elapsed = 0;
-        while (elapsed < 5)
+        if (Player.transform.rotation != endRot) 
         {
-            elapsed += Time.deltaTime;
-
-            Player.transform.Rotate(0, targetAngle, 0);
-            targetAngle = 0;
-
-            //Player.transform.rotation = Quaternion.Slerp(Player.transform.localRotation, endRot, elapsed / 5);
-
-            yield return null;
+            //perform the rotation of the player
+            Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, endRot, 5 * Time.deltaTime);
+          
+            //print("after rotating player rotation = " + Player.transform.rotation + "desired rotation = " + endRot);
+            print("player rotation = " + playerRot);
+        }
+        else
+        {
+            //playerRot = Player.transform.localRotation.eulerAngles.y;
+            print("after rotating Player rotation " + playerRot);
+            rotated = false;
+            //print("player rotation and target rotation are equals");
         }
 
-        //yield return new WaitForSeconds(1f);
+        yield return null;
     }
 
 }

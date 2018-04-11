@@ -31,7 +31,7 @@ public class SubmitButtonHandler : MonoBehaviour {
 
 		//Record original position of the player 
         originalPos = player.transform.localPosition;
-		originalRot = player.transform.rotation;
+        originalRot = player.transform.localRotation;
 
 		//Create instance of the two player handler classes
 		commandProcessor = GetComponent<UIButtonClick>();
@@ -46,9 +46,11 @@ public class SubmitButtonHandler : MonoBehaviour {
 	{
 		/* Return player to original position */
         player.transform.localPosition = originalPos;
-		player.transform.rotation = originalRot;
+        player.transform.localRotation = originalRot;
         commandExecution.indexNode = 0;
         commandExecution.playerRot = 0;
+        commandExecution.isWalking = false;
+        commandExecution.targetAngle = 0;
        
         /*If user had previously clicked the play Button, return player to original position and 
 		 * clear commandList so that when user clicks it again, commands are not duplicated
