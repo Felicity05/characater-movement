@@ -113,6 +113,10 @@ public class UIPlayCommand1 : MonoBehaviour {
 
                 //left++; //count the amount of moveLeft commands issued
                 angleCount--;
+                if(angleCount < 0 )
+                {
+                    angleCount = 3;
+                }
                 //print("LEFT commands " + left);
                 print("Angle Count = " + angleCount);
                 print("Turn left entered!");
