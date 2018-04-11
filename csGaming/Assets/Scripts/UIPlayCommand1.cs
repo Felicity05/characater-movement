@@ -91,7 +91,7 @@ public class UIPlayCommand1 : MonoBehaviour {
                 print("right commands " + right);
 
                 //to get the angle to rotate the character
-                targetAngle = anglesR[right-1];
+                targetAngle = anglesR[(right-1) % anglesR.Length];
 
                 print("targetAngle angle RIGHT = " + targetAngle);
 
@@ -110,7 +110,7 @@ public class UIPlayCommand1 : MonoBehaviour {
 
                 print("LEFT commands " + left);
 
-                targetAngle = anglesL[left - 1];
+                targetAngle = anglesL[(left - 1) % anglesL.Length];
 
                 print("targetAngle angle LEFT = " + targetAngle);
 
@@ -152,12 +152,14 @@ public class UIPlayCommand1 : MonoBehaviour {
 
             }
 
+            //isWalking = false;
+
             //COMPLETE THIS LOGIC
-            else if (btnInstance.commandList[i].Equals("MoveDown()")){
+            //else if (btnInstance.commandList[i].Equals("MoveDown()")){
 
-                cmdDown++;
+                //cmdDown++;
 
-                print("index node: " + indexNode + "commands down: " + cmdDown);
+                //print("index node: " + indexNode + "commands down: " + cmdDown);
 
                 //yield return StartCoroutine(Walk());
 
@@ -166,7 +168,7 @@ public class UIPlayCommand1 : MonoBehaviour {
                 //    indexNode--;
                 //    isWalking = false;
                 //}
-            }
+            //}
 
         }
         //yield return new WaitForSeconds(1f);
@@ -208,10 +210,11 @@ public class UIPlayCommand1 : MonoBehaviour {
             {
 
                 //to increase the speed between the gap 
-                if (Vector3.Distance(Player.transform.localPosition, currentPosition) > 1.128){  //1.128 is the distande between each node
-                    speed = 25f;
+                //if (Vector3.Distance(Player.transform.localPosition, currentPosition) > 1.6){  //1.128 is the distande between each node
+                if (indexNode == 1) { //when node 1 is reached increase speed to walk between the gap
+                    speed = 73 * Time.deltaTime;
                 } else {
-                    speed = 0.5f; //to mantain a fixed speed between the nodes
+                    speed = 0.3f; //to mantain a fixed speed between the nodes
                 }
 
 
@@ -236,6 +239,7 @@ public class UIPlayCommand1 : MonoBehaviour {
 
         if (Player.transform.rotation != endRot) 
         {
+            
             //perform the rotation of the player
             Player.transform.rotation = Quaternion.Slerp(Player.transform.rotation, endRot, 5 * Time.deltaTime);
           

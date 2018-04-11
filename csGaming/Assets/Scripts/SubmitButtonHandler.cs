@@ -49,7 +49,6 @@ public class SubmitButtonHandler : MonoBehaviour {
         player.transform.localRotation = originalRot;
         commandExecution.indexNode = 0;
         commandExecution.playerRot = 0;
-        commandExecution.isWalking = false;
         commandExecution.targetAngle = 0;
        
         /*If user had previously clicked the play Button, return player to original position and 
