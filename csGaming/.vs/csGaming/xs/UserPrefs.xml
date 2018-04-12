@@ -1,13 +1,10 @@
 ﻿<Properties StartupConfiguration="{A60400C0-9A5E-CECD-3197-07EFD814E279}|">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Materials/CubeFaces.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/UIPlayCommand1.cs">
     <Files>
-      <File FileName="Assets/Scripts/UIPlayCommand1.cs" Line="258" Column="6" />
-      <File FileName="Assets/Scripts/SubmitButtonHandler.cs" Line="51" Column="40" />
-      <File FileName="Assets/Xbot characer/xbotAnimController.cs" Line="39" Column="14" />
-      <File FileName="Assets/Scripts/UIPlayCommand.cs" Line="792" Column="54" />
-      <File FileName="Assets/Scripts/PathNodes.cs" Line="33" Column="19" />
-      <File FileName="Assets/Scripts/PressingTrigger.cs" Line="49" Column="5" />
-      <File FileName="Assets/Materials/CubeFaces.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/SubmitButtonHandler.cs" Line="90" Column="40" />
+      <File FileName="Assets/Scripts/UIPlayCommand1.cs" Line="237" Column="39" />
+      <File FileName="Assets/DissapearingCubes.cs" Line="33" Column="5" />
+      <File FileName="Assets/Scripts/PathNodes.cs" Line="24" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

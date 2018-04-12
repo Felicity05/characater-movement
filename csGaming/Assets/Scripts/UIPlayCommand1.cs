@@ -23,6 +23,8 @@ public class UIPlayCommand1 : MonoBehaviour {
 
     public bool isWalking = false;
 
+    Collider playerCollider;
+
     //for the buttons to stay inactive
     public Button submit;
     public Button clear;
@@ -40,6 +42,7 @@ public class UIPlayCommand1 : MonoBehaviour {
 
     public float targetAngle;
 
+    //testing to make the cubes disapear onece the player has passed trough it
 
 	// Use this for initialization
 	void Start () {
@@ -50,6 +53,10 @@ public class UIPlayCommand1 : MonoBehaviour {
         path = GameObject.FindObjectOfType(typeof(PathNodes)) as PathNodes;  //to get the nodes to move the character
 
         nodes = path.getNodes(); //return the list of nodes
+
+        playerCollider = Player.GetComponent<Collider>();
+
+
 
 	}
 
@@ -140,12 +147,30 @@ public class UIPlayCommand1 : MonoBehaviour {
 
                 print("index node: " + indexNode + "commands up: " + cmdUp);
 
-                isWalking = true; //start walking animation 
+                anim.SetBool("isWalking", true); //start walking animation 
+
 
                 //to prevent the player from moving when it is not facing the correct way
                 if (indexNode < 7 && (targetAngle == 0 || targetAngle == 360))
                 {
                     yield return StartCoroutine(Walk()); //where the player moves
+                } 
+
+                if (indexNode > 4){
+                    playerCollider.enabled = true;
+                    print("Collider enabled: " + playerCollider.enabled);
+                }
+
+                if(indexNode > 7 && targetAngle == 90 && indexNode < 16){
+                    if (indexNode == 10){
+                        isWalking = false;
+                        yield return new WaitForSeconds(2f);
+                    }
+                    yield return StartCoroutine(Walk());
+                }
+
+                if(indexNode > 16 && (targetAngle == 0 || targetAngle == 360)){
+                    yield return StartCoroutine(Walk());
                 }
 
                 //make logic for walking after the node 7, I have to put the nodes on the scene
@@ -158,33 +183,15 @@ public class UIPlayCommand1 : MonoBehaviour {
                 }
 
                 //to stop the animation once the player has reached the end node
-                if (indexNode == cmdUp)
-                {
-                    isWalking = false;
-                }
+                //if (indexNode == cmdUp)
+                //{
+                //    isWalking = false;
+                //}
+
 
             }
-
-            //isWalking = false;
-
-            //COMPLETE THIS LOGIC
-            //else if (btnInstance.commandList[i].Equals("MoveDown()")){
-
-            //cmdDown++;
-
-            //print("index node: " + indexNode + "commands down: " + cmdDown);
-
-            //yield return StartCoroutine(Walk());
-
-            //if (indexNode == cmdDown)
-            //{
-            //    indexNode--;
-            //    isWalking = false;
-            //}
-            //}
-
+            anim.SetBool("isWalking", false);
         }
-        //yield return new WaitForSeconds(1f);
 
         btnInstance.i = 0;
         btnInstance.commandList.Clear();
@@ -219,15 +226,15 @@ public class UIPlayCommand1 : MonoBehaviour {
 
             /*if the distance between the position of the player and the node is bigger than 0 then move the player to that node
              when the node is reaced the distance between the position of the node and the position of the player should be 0 */
-            while (Vector3.Distance(Player.transform.localPosition, currentPosition) > 0.01f)
+            while (Vector3.Distance(Player.transform.localPosition, currentPosition) > 0.19f)
             {
 
                 //to increase the speed between the gap 
                 //if (Vector3.Distance(Player.transform.localPosition, currentPosition) > 1.6){  //1.128 is the distande between each node
                 if (indexNode == 1) { //when node 1 is reached increase speed to walk between the gap
-                    speed = 73 * Time.deltaTime;
+                     speed = 15f; //* Time.deltaTime;
                 } else {
-                    speed = 0.3f; //to mantain a fixed speed between the nodes
+                    speed = 0.6f; //to mantain a fixed speed between the nodes
                 }
 
 
@@ -238,7 +245,7 @@ public class UIPlayCommand1 : MonoBehaviour {
                 yield return null; //waits for the function to end
             }
 
-            anim.SetBool("isWalking", false); //stopt the walking animation
+            //anim.SetBool("isWalking", false); //stopt the walking animation
 
         }
     }
